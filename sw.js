@@ -1,9 +1,9 @@
-const CACHE_NAME = 'motoservice-cache-v3';
+const CACHE_NAME = 'motoservice-cache-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './style.css',
-  './app.js',
+  './style.css?v=4',
+  './app.js?v=4',
   './manifest.json',
   './icon.svg',
   './apple-touch-icon.png',
