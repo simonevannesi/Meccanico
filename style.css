@@ -583,6 +583,46 @@ body {
   color: #fbbf24;
 }
 
+.sag-preset-toggle {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.preset-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.preset-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sag-preset {
+  flex: 1;
+  background: #151a23;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-sag-preset.active {
+  background: rgba(255, 106, 0, 0.16);
+  border-color: var(--accent-orange);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 106, 0, 0.2);
+}
+
 /* Rimozione spinner nativi numerici su Safari e Chrome */
 input[type="number"]::-webkit-inner-spin-button, 
 input[type="number"]::-webkit-outer-spin-button { 

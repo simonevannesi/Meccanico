@@ -16,7 +16,7 @@
   <link rel="icon" type="image/png" href="icon-192.png">
 
   <!-- Foglio di stile dedicato -->
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -135,7 +135,14 @@
           <span class="target-label">🎯 Static SAG (Free SAG):</span>
           <span class="target-val" id="sagTargetStatic">25 - 40 mm (Ideale: 35 mm)</span>
         </div>
-        <div style="font-size:11px;color:var(--text-dim);margin-top:6px;" id="sagMethodNotes"></div>
+        <div id="sagPresetToggleWrap" class="sag-preset-toggle" style="display:none;">
+          <span class="preset-label">⚙️ Scegli Target Rider SAG:</span>
+          <div class="preset-btn-group">
+            <button type="button" class="btn-sag-preset" id="btnSagPreset90" data-min="90" data-max="100" data-target="95">Manuale (90–100 mm)</button>
+            <button type="button" class="btn-sag-preset" id="btnSagPreset95" data-min="95" data-max="105" data-target="100">Moderno / Enduro (95–105 mm)</button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:8px;" id="sagMethodNotes"></div>
       </div>
 
       <!-- Misure SAG Posteriore Responsive iOS -->
@@ -450,6 +457,6 @@
   </div>
 
   <!-- Script JS Applicazione -->
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

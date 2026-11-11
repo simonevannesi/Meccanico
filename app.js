@@ -439,6 +439,21 @@ function setupEventListeners() {
     document.getElementById(id)?.addEventListener('input', calculateForkSag);
   });
 
+  // Selettore rapido Target SAG (90-100 vs 95-105)
+  document.querySelectorAll('.btn-sag-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bike = getCurrentBike();
+      if (!bike || !bike.sagSpecs) return;
+      bike.sagSpecs.riderSagMin = parseInt(btn.dataset.min, 10);
+      bike.sagSpecs.riderSagMax = parseInt(btn.dataset.max, 10);
+      bike.sagSpecs.riderSagTarget = parseInt(btn.dataset.target, 10);
+      saveData();
+      renderSagTab();
+      calculateSag();
+      showToast(`🎯 Target Rider SAG impostato: ${bike.sagSpecs.riderSagMin}–${bike.sagSpecs.riderSagMax} mm`);
+    });
+  });
+
   // Salvataggio Profilo Sospensioni
   document.getElementById('btnSaveProfile')?.addEventListener('click', saveSuspensionProfile);
 
@@ -710,6 +725,22 @@ function renderSagTab() {
   document.getElementById('sagTargetStatic').textContent = `${sagSpecs.staticSagMin} - ${sagSpecs.staticSagMax} mm (Ideale: ${sagSpecs.staticSagTarget} mm)`;
   document.getElementById('sagMethodNotes').textContent = sagSpecs.notes || '';
   
+  // Mostra selettore rapido 90-100 vs 95-105 per YZ250 o moto custom
+  const toggleWrap = document.getElementById('sagPresetToggleWrap');
+  if (toggleWrap) {
+    if (bike.id !== 'ktm65') {
+      toggleWrap.style.display = 'block';
+      const btn90 = document.getElementById('btnSagPreset90');
+      const btn95 = document.getElementById('btnSagPreset95');
+      if (btn90 && btn95) {
+        btn90.classList.toggle('active', sagSpecs.riderSagMin === 90);
+        btn95.classList.toggle('active', sagSpecs.riderSagMin === 95);
+      }
+    } else {
+      toggleWrap.style.display = 'none';
+    }
+  }
+
   if (sagSpecs.forkSagTarget) {
     document.getElementById('forkSagSection').style.display = 'block';
     document.getElementById('sagTargetFork').textContent = `${sagSpecs.forkSagMin} - ${sagSpecs.forkSagMax} mm (Ideale: ${sagSpecs.forkSagTarget} mm)`;
