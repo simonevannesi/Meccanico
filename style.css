@@ -571,90 +571,151 @@ body {
   color: #fbbf24;
 }
 
-/* Schemi Grafici SAG */
-.sag-diagram {
-  background: #080a0f;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  margin-bottom: 16px;
+/* Rimozione spinner nativi numerici su Safari e Chrome */
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
-.diagram-steps {
+/* Misure SAG Responsive iPhone (Card orizzontali fluide) */
+.sag-measures-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.step-item {
+.sag-measure-card {
+  background: #0d121c;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.sag-measure-card.highlight {
+  border-color: rgba(255, 106, 0, 0.45);
+  background: linear-gradient(90deg, rgba(255,106,0,0.06), #0d121c);
+}
+
+.sag-measure-card.highlight-blue {
+  border-color: rgba(59, 130, 246, 0.45);
+  background: linear-gradient(90deg, rgba(59,130,246,0.06), #0d121c);
+}
+
+.measure-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0; /* previene overflow del flex child */
 }
 
 .step-letter {
   background: var(--accent-orange);
   color: #fff;
   font-weight: 900;
-  font-size: 14px;
-  width: 28px;
-  height: 28px;
+  font-size: 15px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px var(--accent-orange-glow);
 }
 
 .step-letter.blue {
   background: var(--accent-blue);
+  box-shadow: 0 2px 8px var(--accent-blue-glow);
 }
 
-.step-info strong {
-  font-size: 13px;
-  color: #fff;
-  display: block;
-}
-
-.step-info p {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-/* Input Form SAG */
-.sag-input-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.sag-input-group {
+.measure-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  min-width: 0;
 }
 
-.sag-input-group label {
-  font-size: 11px;
+.measure-info strong {
+  font-size: 13px;
   font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.25;
+}
+
+.measure-info small {
+  font-size: 11px;
   color: var(--text-muted);
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
-.sag-input-group input {
+/* Casella Input con Unità mm Integrata */
+.measure-input-wrap {
+  display: flex;
+  align-items: center;
   background: #080a0f;
-  border: 1.5px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 10px 8px;
-  text-align: center;
-  outline: none;
+  border: 1.5px solid #334155;
+  border-radius: 8px;
+  padding: 2px 8px;
+  width: 120px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
-.sag-input-group input:focus {
+.measure-input-wrap:focus-within {
   border-color: var(--accent-orange);
+  box-shadow: 0 0 10px var(--accent-orange-glow);
+  background: #0d1117;
+}
+
+.sag-measure-card.highlight-blue .measure-input-wrap:focus-within {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 10px var(--accent-blue-glow);
+}
+
+.measure-input-wrap input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+  width: 100%;
+  min-width: 0;
+  text-align: right;
+  outline: none;
+  padding: 6px 2px;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.measure-unit {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 800;
+  margin-left: 4px;
+  user-select: none;
+}
+
+@media (max-width: 350px) {
+  .sag-measure-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .measure-input-wrap {
+    width: 100%;
+  }
 }
 
 .btn-primary-block {
@@ -668,6 +729,7 @@ body {
   width: 100%;
   cursor: pointer;
   box-shadow: 0 4px 14px var(--accent-orange-glow);
+  -webkit-appearance: none;
 }
 
 /* Risultato SAG Box */
