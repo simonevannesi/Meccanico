@@ -1177,11 +1177,36 @@ function showToast(msg) {
   }, 2800);
 }
 
-// Service Worker per Offline e PWA
+// Service Worker per Offline e PWA con Auto-Update
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('ServiceWorker registrato:', reg.scope))
+      .then(reg => {
+        console.log('ServiceWorker registrato:', reg.scope);
+        // Controlla aggiornamenti
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showToast('✨ Nuova versione disponibile! Tocca 🔄 per aggiornare.');
+            }
+          });
+        });
+      })
       .catch(err => console.log('SW registration error:', err));
   }
+
+  // Tasto ricarica forzata cache
+  document.getElementById('btnForceRefresh')?.addEventListener('click', () => {
+    showToast('🔄 Aggiornamento in corso...');
+    if ('caches' in window) {
+      caches.keys().then((names) => {
+        return Promise.all(names.map(name => caches.delete(name)));
+      }).then(() => {
+        window.location.reload(true);
+      });
+    } else {
+      window.location.reload(true);
+    }
+  });
 }
