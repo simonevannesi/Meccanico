@@ -135,50 +135,55 @@
         <div style="font-size:11px;color:var(--text-dim);margin-top:6px;" id="sagMethodNotes"></div>
       </div>
 
-      <!-- Guida Grafica alle 3 Misure A, B, C -->
-      <div class="sag-diagram">
-        <div class="diagram-steps">
-          <div class="step-item">
+      <!-- Misure SAG Posteriore Responsive iOS -->
+      <div class="sag-measures-list">
+        <!-- Misura A -->
+        <div class="sag-measure-card">
+          <div class="measure-left">
             <span class="step-letter">A</span>
-            <div class="step-info">
-              <strong>Moto sul Cavalletto Centrale (Ruota Sollevata)</strong>
-              <p>Misura in mm tra il perno ruota posteriore e un punto fisso sul parafango/fianchetto.</p>
+            <div class="measure-info">
+              <strong>Ruota Sollevata (Cavalletto)</strong>
+              <small>Moto sollevata, ruota posteriore a vuoto</small>
             </div>
           </div>
-          <div class="step-item">
+          <div class="measure-input-wrap">
+            <input type="number" id="sagA" inputmode="decimal" pattern="[0-9]*" placeholder="es. 600" min="0">
+            <span class="measure-unit">mm</span>
+          </div>
+        </div>
+
+        <!-- Misura B -->
+        <div class="sag-measure-card">
+          <div class="measure-left">
             <span class="step-letter">B</span>
-            <div class="step-info">
-              <strong>Moto a Terra con il Proprio Peso (Senza Pilota)</strong>
-              <p>Fai rimbalzare la sella una volta, poi misura la stessa distanza tra i due punti fissi.</p>
+            <div class="measure-info">
+              <strong>A Terra Senza Pilota (Free Sag)</strong>
+              <small>Moto a terra col solo proprio peso</small>
             </div>
           </div>
-          <div class="step-item">
+          <div class="measure-input-wrap">
+            <input type="number" id="sagB" inputmode="decimal" pattern="[0-9]*" placeholder="es. 565" min="0">
+            <span class="measure-unit">mm</span>
+          </div>
+        </div>
+
+        <!-- Misura C -->
+        <div class="sag-measure-card highlight">
+          <div class="measure-left">
             <span class="step-letter">C</span>
-            <div class="step-info">
-              <strong>Moto a Terra con PILOTA A BORDO Vestito Completo</strong>
-              <p>Pilota con stivali e casco in piedi sulle pedane o seduto in posizione di gara, un amico tiene la moto e misura.</p>
+            <div class="measure-info">
+              <strong>Con Pilota a Bordo (Race Sag)</strong>
+              <small>Pilota vestito completo in posizione di gara</small>
             </div>
+          </div>
+          <div class="measure-input-wrap">
+            <input type="number" id="sagC" inputmode="decimal" pattern="[0-9]*" placeholder="es. 505" min="0">
+            <span class="measure-unit">mm</span>
           </div>
         </div>
       </div>
 
-      <!-- Form Inserimento Misure -->
-      <div class="sag-input-grid">
-        <div class="sag-input-group">
-          <label for="sagA">Misura A (mm)</label>
-          <input type="number" id="sagA" placeholder="es. 600" min="0">
-        </div>
-        <div class="sag-input-group">
-          <label for="sagB">Misura B (mm)</label>
-          <input type="number" id="sagB" placeholder="es. 565" min="0">
-        </div>
-        <div class="sag-input-group">
-          <label for="sagC">Misura C (mm)</label>
-          <input type="number" id="sagC" placeholder="es. 505" min="0">
-        </div>
-      </div>
-
-      <button class="btn-primary-block" id="btnCalcSag">Calcola e Diagnostica SAG</button>
+      <button class="btn-primary-block" id="btnCalcSag" style="margin-top:14px;">Calcola e Diagnostica SAG</button>
 
       <!-- Risultato con Diagnosi Molla e Precarico -->
       <div id="sagResultBox" class="sag-result-box" style="display:none;"></div>
@@ -193,34 +198,40 @@
           <span class="target-val" id="sagTargetFork">35 - 45 mm</span>
         </div>
       </div>
-      <div class="diagram-steps" style="margin-bottom:12px;">
-        <div class="step-item">
-          <span class="step-letter blue">C</span>
-          <div class="step-info">
-            <strong>Stelo Forcella Esteso (Moto su cavalletto)</strong>
-            <p>Distanza tra parapolvere stelo e piastra inferiore di sterzo o piedino.</p>
+
+      <div class="sag-measures-list">
+        <!-- Forcella C -->
+        <div class="sag-measure-card">
+          <div class="measure-left">
+            <span class="step-letter blue">C</span>
+            <div class="measure-info">
+              <strong>Stelo Esteso (Cavalletto)</strong>
+              <small>Distanza parapolvere stelo a piedino/piastra</small>
+            </div>
+          </div>
+          <div class="measure-input-wrap">
+            <input type="number" id="sagForkC" inputmode="decimal" pattern="[0-9]*" placeholder="es. 300" min="0">
+            <span class="measure-unit">mm</span>
           </div>
         </div>
-        <div class="step-item">
-          <span class="step-letter blue">D</span>
-          <div class="step-info">
-            <strong>Stelo Forcella con Pilota a Bordo</strong>
-            <p>Distanza negli stessi punti con pilota in piedi in posizione d'attacco.</p>
+
+        <!-- Forcella D -->
+        <div class="sag-measure-card highlight-blue">
+          <div class="measure-left">
+            <span class="step-letter blue">D</span>
+            <div class="measure-info">
+              <strong>Forcella con Pilota a Bordo</strong>
+              <small>Pilota vestito in piedi posizione d'attacco</small>
+            </div>
+          </div>
+          <div class="measure-input-wrap">
+            <input type="number" id="sagForkD" inputmode="decimal" pattern="[0-9]*" placeholder="es. 260" min="0">
+            <span class="measure-unit">mm</span>
           </div>
         </div>
       </div>
 
-      <div class="sag-input-grid" style="grid-template-columns: 1fr 1fr;">
-        <div class="sag-input-group">
-          <label for="sagForkC">Misura C (mm)</label>
-          <input type="number" id="sagForkC" placeholder="es. 300">
-        </div>
-        <div class="sag-input-group">
-          <label for="sagForkD">Misura D (mm)</label>
-          <input type="number" id="sagForkD" placeholder="es. 260">
-        </div>
-      </div>
-      <button class="btn-primary-block" id="btnCalcSagFork" style="background:#2563eb;">Calcola SAG Forcella</button>
+      <button class="btn-primary-block" id="btnCalcSagFork" style="background:#2563eb;margin-top:14px;">Calcola SAG Forcella</button>
       <div id="forkSagResultBox" class="sag-result-box" style="display:none;"></div>
     </div>
   </section>
