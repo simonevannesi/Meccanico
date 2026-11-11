@@ -1,14 +1,13 @@
-const CACHE_NAME = 'motoservice-cache-v5';
+const CACHE_NAME = 'motoservice-cache-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css?v=5',
   './app.js?v=5',
-  './manifest.json',
-  './icon.svg',
-  './apple-touch-icon.png',
-  './icon-192.png',
-  './icon-512.png'
+  './manifest.json?v=6',
+  './apple-touch-icon.png?v=6',
+  './icon-192.png?v=6',
+  './icon-512.png?v=6'
 ];
 
 self.addEventListener('install', (event) => {

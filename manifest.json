@@ -1,27 +1,22 @@
 {
   "name": "MotoSAG & Service - Manutenzione & Sospensioni",
   "short_name": "MotoService",
-  "description": "App per manutenzione moto ad ore/km, calcolo SAG e settaggi sospensioni",
+  "description": "App per manutenzione moto ad ore, calcolo SAG e settaggi sospensioni",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#ff6600",
+  "background_color": "#0b0e14",
+  "theme_color": "#ff6a00",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon-192.png?v=6",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512.png?v=6",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
     }
   ]
 }
