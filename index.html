@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MotoSAG & Service - Manutenzione & Sospensioni</title>
+
+  <!-- PWA & iOS Safari Bookmark optimization -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MotoService">
+  <meta name="theme-color" content="#0b0e14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="icon" type="image/png" href="icon-192.png">
+
+  <!-- Foglio di stile dedicato -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="logo-brand">
+      <img src="icon.svg" alt="MotoService" class="logo-icon">
+      <div class="brand-text">
+        <h1>MotoSAG &amp; Service</h1>
+        <p>Manuale &amp; Sospensioni Racing</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnHelpGithub" title="Guida GitHub Pages & iPhone">
+        📱 WebApp
+      </button>
+      <button class="icon-btn" id="btnExportJson" title="Backup Dati">
+        💾
+      </button>
+      <button class="icon-btn" id="btnImportJson" title="Ripristina Dati">
+        📂
+      </button>
+      <input type="file" id="fileImportInput" accept=".json" style="display:none">
+    </div>
+  </header>
+
+  <!-- SELETTORE MOTO & CONTROLLO ORE -->
+  <section class="bike-control-card">
+    <div class="bike-selector-row">
+      <select id="bikeSelect" class="custom-select" title="Seleziona la tua moto">
+        <!-- Generato dinamicamente da app.js -->
+      </select>
+      <button class="btn-add-bike" id="btnOpenAddBike" title="Aggiungi nuova moto">+</button>
+    </div>
+
+    <div class="hours-editor-row">
+      <div class="hours-input-wrap">
+        <div class="hours-label-col">
+          <span class="hours-title" id="currentUnitLabel">Ore Motore Totali</span>
+          <small style="color:var(--text-dim);font-size:11px;">Aggiorna dopo ogni uscita/manche</small>
+        </div>
+        <input type="number" id="inputBikeHours" class="hours-input" step="0.1" min="0" value="0.0">
+        <button class="btn-save-hours" id="btnSaveHours">Salva</button>
+      </div>
+
+      <div class="quick-hours-buttons">
+        <button class="btn-quick-hour" data-delta="0.5">+0.5 h</button>
+        <button class="btn-quick-hour" data-delta="1.0">+1.0 h</button>
+        <button class="btn-quick-hour" data-delta="2.0">+2.0 h</button>
+      </div>
+    </div>
+
+    <!-- Dati Rapidi Fabbrica da Manuale -->
+    <div class="specs-toggle-wrap">
+      <span class="specs-title">⚙️ Specifiche Rapide di Fabbrica</span>
+      <div id="bikeSpecsBox">
+        <!-- Compilato dinamicamente con candela, olii, catena -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: MANUTENZIONE & SCADENZE ORE                           -->
+  <!-- ============================================================ -->
+  <main id="tabMaintenance" class="tab-pane active">
+    <!-- Statistiche stato manutenzione -->
+    <div class="stats-bar">
+      <div class="stat-pill danger">
+        <span class="stat-val" id="statDueCount">0</span>
+        <span class="stat-label">Scaduti</span>
+      </div>
+      <div class="stat-pill warning">
+        <span class="stat-val" id="statUpcomingCount">0</span>
+        <span class="stat-label">In Scadenza</span>
+      </div>
+      <div class="stat-pill ok">
+        <span class="stat-val" id="statOkCount">0</span>
+        <span class="stat-label">In Regola</span>
+      </div>
+    </div>
+
+    <!-- Banner urgente se ci sono interventi scaduti -->
+    <div id="urgentBanner" class="urgent-banner" style="display:none;"></div>
+
+    <div class="section-header-row">
+      <h2>📋 Interventi da Manuale</h2>
+      <button class="btn-secondary-sm" id="btnOpenAddModal">+ Aggiungi Voce</button>
+    </div>
+
+    <!-- Lista Task con Calcolo Ore -->
+    <div class="tasks-list" id="tasksList">
+      <!-- Generato dinamicamente -->
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: CALCOLO SAG & DIAGNOSI ASSETTO                        -->
+  <!-- ============================================================ -->
+  <section id="tabSag" class="tab-pane">
+    <div class="sag-card">
+      <h3>📏 Calcolatore SAG Posteriore</h3>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+        Moto selezionata: <strong id="sagBikeName" style="color:var(--accent-orange);">Yamaha YZ 250</strong>
+      </p>
+
+      <!-- Target Ufficiali Manuale -->
+      <div class="sag-targets-box">
+        <div class="target-row">
+          <span class="target-label">🎯 Rider SAG (Sunken Length):</span>
+          <span class="target-val" id="sagTargetRider">90 - 100 mm (Ideale: 95 mm)</span>
+        </div>
+        <div class="target-row">
+          <span class="target-label">🎯 Static SAG (Free SAG):</span>
+          <span class="target-val" id="sagTargetStatic">25 - 40 mm (Ideale: 35 mm)</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:6px;" id="sagMethodNotes"></div>
+      </div>
+
+      <!-- Guida Grafica alle 3 Misure A, B, C -->
+      <div class="sag-diagram">
+        <div class="diagram-steps">
+          <div class="step-item">
+            <span class="step-letter">A</span>
+            <div class="step-info">
+              <strong>Moto sul Cavalletto Centrale (Ruota Sollevata)</strong>
+              <p>Misura in mm tra il perno ruota posteriore e un punto fisso sul parafango/fianchetto.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <span class="step-letter">B</span>
+            <div class="step-info">
+              <strong>Moto a Terra con il Proprio Peso (Senza Pilota)</strong>
+              <p>Fai rimbalzare la sella una volta, poi misura la stessa distanza tra i due punti fissi.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <span class="step-letter">C</span>
+            <div class="step-info">
+              <strong>Moto a Terra con PILOTA A BORDO Vestito Completo</strong>
+              <p>Pilota con stivali e casco in piedi sulle pedane o seduto in posizione di gara, un amico tiene la moto e misura.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Inserimento Misure -->
+      <div class="sag-input-grid">
+        <div class="sag-input-group">
+          <label for="sagA">Misura A (mm)</label>
+          <input type="number" id="sagA" placeholder="es. 600" min="0">
+        </div>
+        <div class="sag-input-group">
+          <label for="sagB">Misura B (mm)</label>
+          <input type="number" id="sagB" placeholder="es. 565" min="0">
+        </div>
+        <div class="sag-input-group">
+          <label for="sagC">Misura C (mm)</label>
+          <input type="number" id="sagC" placeholder="es. 505" min="0">
+        </div>
+      </div>
+
+      <button class="btn-primary-block" id="btnCalcSag">Calcola e Diagnostica SAG</button>
+
+      <!-- Risultato con Diagnosi Molla e Precarico -->
+      <div id="sagResultBox" class="sag-result-box" style="display:none;"></div>
+    </div>
+
+    <!-- Sezione SAG Forcella Anteriore -->
+    <div class="sag-card" id="forkSagSection">
+      <h3>📐 SAG Forcella Anteriore</h3>
+      <div class="sag-targets-box">
+        <div class="target-row">
+          <span class="target-label">🎯 Fork SAG Consigliato:</span>
+          <span class="target-val" id="sagTargetFork">35 - 45 mm</span>
+        </div>
+      </div>
+      <div class="diagram-steps" style="margin-bottom:12px;">
+        <div class="step-item">
+          <span class="step-letter blue">C</span>
+          <div class="step-info">
+            <strong>Stelo Forcella Esteso (Moto su cavalletto)</strong>
+            <p>Distanza tra parapolvere stelo e piastra inferiore di sterzo o piedino.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <span class="step-letter blue">D</span>
+          <div class="step-info">
+            <strong>Stelo Forcella con Pilota a Bordo</strong>
+            <p>Distanza negli stessi punti con pilota in piedi in posizione d'attacco.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sag-input-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="sag-input-group">
+          <label for="sagForkC">Misura C (mm)</label>
+          <input type="number" id="sagForkC" placeholder="es. 300">
+        </div>
+        <div class="sag-input-group">
+          <label for="sagForkD">Misura D (mm)</label>
+          <input type="number" id="sagForkD" placeholder="es. 260">
+        </div>
+      </div>
+      <button class="btn-primary-block" id="btnCalcSagFork" style="background:#2563eb;">Calcola SAG Forcella</button>
+      <div id="forkSagResultBox" class="sag-result-box" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: SETTAGGI SOSPENSIONI (CLICKER SHEET & NOTE)           -->
+  <!-- ============================================================ -->
+  <section id="tabSuspension" class="tab-pane">
+    <div class="clicker-box">
+      <h3>🛠️ Scheda Settaggi Sospensioni (Clicker)</h3>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">
+        Tutti i click sono conteggiati a partire da <strong>TUTTO CHIUSO</strong> (ruotando completamente in senso orario, poi contando i click aprendo in senso antiorario).
+      </p>
+
+      <!-- FORCELLA ANTERIORE -->
+      <div class="clicker-section-title">🔵 FORCELLA ANTERIORE</div>
+      <div class="clicker-grid three-col">
+        <div class="click-input-wrap">
+          <label for="setForkComp">Compressione (C)</label>
+          <input type="number" id="setForkComp" placeholder="Click" min="0" max="30">
+        </div>
+        <div class="click-input-wrap">
+          <label for="setForkReb">Ritorno (R)</label>
+          <input type="number" id="setForkReb" placeholder="Click" min="0" max="30">
+        </div>
+        <div class="click-input-wrap">
+          <label for="setForkHeight">Sfilamento Steli</label>
+          <input type="number" id="setForkHeight" placeholder="mm" min="0" max="25">
+        </div>
+      </div>
+
+      <!-- MONOAMMORTIZZATORE POSTERIORE -->
+      <div class="clicker-section-title">🔴 MONOAMMORTIZZATORE POSTERIORE</div>
+      <div class="clicker-grid">
+        <div class="click-input-wrap">
+          <label for="setShockPreload">Lunghezza Molla / Precarico (mm)</label>
+          <input type="number" id="setShockPreload" step="0.5" placeholder="es. 255 mm">
+        </div>
+        <div class="click-input-wrap">
+          <label for="setShockReb">Ritorno (Rebound Clicks)</label>
+          <input type="number" id="setShockReb" placeholder="Click" min="0" max="30">
+        </div>
+      </div>
+      <div class="clicker-grid">
+        <div class="click-input-wrap">
+          <label for="setShockLSC">Compressione Basse Vel. (Low Speed)</label>
+          <input type="number" id="setShockLSC" placeholder="Click" min="0" max="30">
+        </div>
+        <div class="click-input-wrap">
+          <label for="setShockHSC">Compressione Alte Vel. (High Speed)</label>
+          <input type="number" id="setShockHSC" step="0.25" placeholder="Giri (es. 1.25)">
+        </div>
+      </div>
+
+      <!-- NOTE ASSETTO / PISTA -->
+      <div class="clicker-section-title">📝 Note Assetto &amp; Terreno</div>
+      <div class="click-input-wrap" style="margin-bottom:8px;">
+        <label for="setProfileName">Nome Assetto / Pista</label>
+        <input type="text" id="setProfileName" placeholder="es. Pista Viterbo (Fango) o Assetto Gara Secco" style="text-align:left;">
+      </div>
+      <textarea id="setNotes" class="notes-textarea" placeholder="Note sul comportamento moto: es. avantreno che chiude in curva, mono rimbalza sui dossi in staccata, canale fondo..."></textarea>
+
+      <button class="btn-primary-block" id="btnSaveProfile">💾 Salva questo Assetto Sospensioni</button>
+    </div>
+
+    <!-- ELENCO ASSETTI SALVATI -->
+    <div class="section-header-row">
+      <h2>🗂️ Assetti e Setup Salvati</h2>
+    </div>
+    <div id="savedProfilesList">
+      <!-- Generato dinamicamente -->
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4: STORICO INTERVENTI & REGISTRO                        -->
+  <!-- ============================================================ -->
+  <section id="tabHistory" class="tab-pane">
+    <div class="section-header-row">
+      <h2>📖 Registro Manutenzioni Eseguite</h2>
+      <button class="btn-secondary-sm" id="btnResetDefaults" style="color:#ef4444;border-color:#7f1d1d;">Ripristina Fabbrica</button>
+    </div>
+    <div id="historyList">
+      <!-- Generato dinamicamente -->
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- BARRA DI NAVIGAZIONE INFERIORE (TAB BAR iOS NATIVE STYLE)   -->
+  <!-- ============================================================ -->
+  <nav class="tab-nav">
+    <button class="nav-btn active" data-tab="tabMaintenance">
+      <span class="nav-icon">⏱️</span>
+      <span>Manutenzione</span>
+    </button>
+    <button class="nav-btn" data-tab="tabSag">
+      <span class="nav-icon">📏</span>
+      <span>SAG</span>
+    </button>
+    <button class="nav-btn" data-tab="tabSuspension">
+      <span class="nav-icon">⚙️</span>
+      <span>Sospensioni</span>
+    </button>
+    <button class="nav-btn" data-tab="tabHistory">
+      <span class="nav-icon">📋</span>
+      <span>Storico</span>
+    </button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- MODALE: AGGIUNGI INTERVENTO PERSONALIZZATO                  -->
+  <!-- ============================================================ -->
+  <div class="modal-backdrop" id="addTaskModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Aggiungi Intervento</h3>
+        <button class="btn-close-modal" id="btnCloseTaskModal">&times;</button>
+      </div>
+      <form id="formAddTask">
+        <div class="form-group">
+          <label for="newTaskName">Nome Intervento / Componente</label>
+          <input type="text" id="newTaskName" class="form-input" placeholder="es. Controllo Dischi Frizione" required>
+        </div>
+        <div class="form-group">
+          <label for="newTaskInterval">Intervallo (Ore o Km)</label>
+          <input type="number" id="newTaskInterval" class="form-input" placeholder="es. 20" step="0.5" required>
+        </div>
+        <div class="form-group">
+          <label for="newTaskLastDone">Eseguito all'ora / km (default: 0)</label>
+          <input type="number" id="newTaskLastDone" class="form-input" value="0" step="0.5">
+        </div>
+        <div class="form-checkbox-row">
+          <input type="checkbox" id="newTaskCritical" checked>
+          <label for="newTaskCritical">Intervento critico (motore / sicurezza)</label>
+        </div>
+        <div class="form-group">
+          <label for="newTaskDesc">Note e Istruzioni</label>
+          <textarea id="newTaskDesc" class="form-input" rows="2" placeholder="Specifiche olio, tolleranze o coppie di serraggio"></textarea>
+        </div>
+        <button type="submit" class="btn-primary-block">Salva Intervento</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODALE: AGGIUNGI NUOVA MOTO                                 -->
+  <!-- ============================================================ -->
+  <div class="modal-backdrop" id="addBikeModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🏍️ Aggiungi Nuova Moto</h3>
+        <button class="btn-close-modal" id="btnCloseBikeModal">&times;</button>
+      </div>
+      <form id="formAddBike">
+        <div class="form-group">
+          <label for="newBikeName">Marca e Modello</label>
+          <input type="text" id="newBikeName" class="form-input" placeholder="es. KTM 300 EXC o Honda CRF 450" required>
+        </div>
+        <div class="form-group">
+          <label for="newBikeType">Tipo di Conteggio</label>
+          <select id="newBikeType" class="form-input">
+            <option value="hours">Ore Motore (Fuoristrada / Pista / Cross)</option>
+            <option value="km">Chilometri (Strada / Scooter)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="newBikeHours">Ore / Km attuali</label>
+          <input type="number" id="newBikeHours" class="form-input" value="0" step="0.1">
+        </div>
+        <button type="submit" class="btn-primary-block">Crea Scheda Moto</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODALE: GUIDA GITHUB PAGES & IPHONE                         -->
+  <!-- ============================================================ -->
+  <div class="modal-backdrop" id="githubModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📱 Come Usare su iPhone &amp; GitHub</h3>
+        <button class="btn-close-modal" id="btnCloseGithubModal">&times;</button>
+      </div>
+      
+      <div class="guide-step">
+        <h4>1. Pubblicare GRATIS su GitHub Pages</h4>
+        <p>Per avere l'app sempre accessibile online ovunque:</p>
+        <ol>
+          <li>Crea un repository su GitHub (es. <code>Meccanico</code>).</li>
+          <li>Carica i file di questa cartella (<code>index.html</code>, <code>style.css</code>, <code>app.js</code>, <code>manifest.json</code>, icone).</li>
+          <li>Vai su <strong>Settings &gt; Pages</strong> nel tuo repository GitHub.</li>
+          <li>Sotto <em>Branch</em> seleziona <code>main</code> (o <code>master</code>) e cartella <code>/ (root)</code>, poi clicca <strong>Save</strong>.</li>
+          <li>In 60 secondi il tuo link sarà attivo: <br>
+          <code class="code-snippet">https://TUO-USERNAME.github.io/Meccanico/</code></li>
+        </ol>
+      </div>
+
+      <div class="guide-step">
+        <h4>2. Salvare su iPhone come App / Bookmark</h4>
+        <ol>
+          <li>Apri il link con <strong>Safari</strong> sul tuo iPhone.</li>
+          <li>Tocca l'icona <strong>Condividi</strong> (il quadrato con la freccia verso l'alto ⬆️ in basso).</li>
+          <li>Scorri e tocca <strong>"Aggiungi alla schermata Home"</strong> 📲 (oppure "Aggiungi ai preferiti").</li>
+          <li>Tocca <strong>Aggiungi</strong> in alto a destra.</li>
+        </ol>
+        <p style="margin-top:6px;color:#86efac;">
+          ✨ Troverai l'icona personalizzata sulla schermata dell'iPhone e si aprirà a schermo intero come un'app nativa, funzionando anche <strong>OFFLINE</strong> in pista o nel box senza connessione internet!
+        </p>
+      </div>
+
+      <button class="btn-primary-block" onclick="document.getElementById('githubModal').classList.remove('active');">Ho capito, perfetto!</button>
+    </div>
+  </div>
+
+  <!-- Script JS Applicazione -->
+  <script src="app.js"></script>
+</body>
+</html>
