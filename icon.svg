@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141821"/>
+      <stop offset="100%" stop-color="#0a0c10"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7300"/>
+      <stop offset="100%" stop-color="#ff3b00"/>
+    </linearGradient>
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#252b3b" stroke-width="6"/>
+
+  <!-- Shock spring stylized -->
+  <g transform="translate(196, 70)">
+    <!-- Shock top eyelet -->
+    <circle cx="60" cy="40" r="28" fill="none" stroke="url(#accentGrad)" stroke-width="14" filter="url(#glow)"/>
+    <circle cx="60" cy="40" r="12" fill="#141821" stroke="#374151" stroke-width="4"/>
+    <!-- Shock reservoir cylinder -->
+    <rect x="25" y="68" width="70" height="45" rx="8" fill="#1f2937" stroke="#374151" stroke-width="4"/>
+    <!-- Threaded collar / preload ring -->
+    <rect x="18" y="113" width="84" height="18" rx="4" fill="url(#metalGrad)"/>
+    
+    <!-- Spring coils -->
+    <path d="M 20 145 C 50 135, 70 135, 100 145 C 90 165, 30 165, 20 185 C 50 175, 70 175, 100 185 C 90 205, 30 205, 20 225 C 50 215, 70 215, 100 225 C 90 245, 30 245, 20 265 C 50 255, 70 255, 100 265 C 90 285, 30 285, 20 305 C 50 295, 70 295, 100 305" 
+          fill="none" stroke="url(#accentGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+    <!-- Damper shaft & bottom collar -->
+    <rect x="48" y="130" width="24" height="175" fill="#9ca3af" opacity="0.6"/>
+    <rect x="25" y="305" width="70" height="20" rx="4" fill="#1f2937" stroke="#374151" stroke-width="4"/>
+    <!-- Bottom eyelet -->
+    <line x1="60" y1="325" x2="60" y2="350" stroke="#9ca3af" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="60" cy="365" r="24" fill="none" stroke="url(#accentGrad)" stroke-width="12"/>
+    <circle cx="60" cy="365" r="10" fill="#141821" stroke="#374151" stroke-width="4"/>
+  </g>
+
+  <!-- Wrench tool crossed -->
+  <g transform="translate(145, 150) rotate(-42 110 110)">
+    <path d="M 95 10 C 70 10, 52 28, 52 50 C 52 62, 57 73, 65 80 L 15 220 C 10 235, 25 250, 40 245 L 180 95 C 187 103, 198 108, 210 108 C 232 108, 250 90, 250 65 C 250 48, 239 33, 224 28 L 205 60 L 175 45 L 185 15 C 172 12, 158 10, 145 10 Z" 
+          fill="#3b82f6" opacity="0.85" filter="url(#glow)"/>
+    <circle cx="32" cy="235" r="8" fill="#141821"/>
+  </g>
+
+  <!-- Title / Badge overlay at bottom -->
+  <rect x="76" y="420" width="360" height="52" rx="14" fill="#111827" stroke="#ff5500" stroke-width="2"/>
+  <text x="256" y="454" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" letter-spacing="3" text-anchor="middle">MOTO SAG &amp; SERVICE</text>
+</svg>
