@@ -718,10 +718,28 @@ function renderSagTab() {
   }
 }
 
+function parseMm(val) {
+  if (val === null || val === undefined) return NaN;
+  const cleaned = String(val).trim().replace(',', '.').replace(/[^0-9.\-]/g, '');
+  return parseFloat(cleaned);
+}
+
+function fixSagTypo(inputId, newVal) {
+  const el = document.getElementById(inputId);
+  if (el) {
+    el.value = newVal;
+    calculateSag();
+  }
+}
+
 function calculateSag() {
-  const a = parseFloat(document.getElementById('sagA').value);
-  const b = parseFloat(document.getElementById('sagB').value);
-  const c = parseFloat(document.getElementById('sagC').value);
+  const rawA = document.getElementById('sagA').value;
+  const rawB = document.getElementById('sagB').value;
+  const rawC = document.getElementById('sagC').value;
+
+  const a = parseMm(rawA);
+  const b = parseMm(rawB);
+  const c = parseMm(rawC);
 
   const resultBox = document.getElementById('sagResultBox');
   const bike = getCurrentBike();
@@ -732,18 +750,47 @@ function calculateSag() {
     return;
   }
 
-  if (a <= b || a <= c || b <= c) {
+  // Rilevamento intelligente errore di battitura (es. 6425 invece di 642.5 o valori in cm)
+  const typoAlerts = [];
+  if (a > 1200) typoAlerts.push({ id: 'sagA', label: 'Misura A', val: a, fixed: a / 10, msg: `hai scritto ${a} mm, forse intendevi <b>${a/10} mm</b>?` });
+  if (b > 1200) typoAlerts.push({ id: 'sagB', label: 'Misura B', val: b, fixed: b / 10, msg: `hai scritto ${b} mm, forse intendevi <b>${b/10} mm</b>?` });
+  if (c > 1200) typoAlerts.push({ id: 'sagC', label: 'Misura C', val: c, fixed: c / 10, msg: `hai scritto ${c} mm, forse intendevi <b>${c/10} mm</b>?` });
+
+  if (a < 150 && a > 15) typoAlerts.push({ id: 'sagA', label: 'Misura A', val: a, fixed: Math.round(a * 10), msg: `hai inserito ${a} in cm? In mm sarebbe <b>${Math.round(a * 10)} mm</b>.` });
+  if (b < 150 && b > 15) typoAlerts.push({ id: 'sagB', label: 'Misura B', val: b, fixed: Math.round(b * 10), msg: `hai inserito ${b} in cm? In mm sarebbe <b>${Math.round(b * 10)} mm</b>.` });
+  if (c < 150 && c > 15) typoAlerts.push({ id: 'sagC', label: 'Misura C', val: c, fixed: Math.round(c * 10), msg: `hai inserito ${c} in cm? In mm sarebbe <b>${Math.round(c * 10)} mm</b>.` });
+
+  if (typoAlerts.length > 0) {
     resultBox.style.display = 'block';
     resultBox.className = 'sag-result-box warning';
+    let btnsHtml = typoAlerts.map(t => `
+      <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,0,0,0.3);padding:8px 10px;border-radius:6px;">
+        <span style="font-size:12px;"><b>${t.label}</b>: ${t.msg}</span>
+        <button onclick="fixSagTypo('${t.id}', ${t.fixed})" style="background:var(--accent-orange);color:#fff;border:none;padding:6px 10px;border-radius:6px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;">
+          Correggi in ${t.fixed} mm
+        </button>
+      </div>
+    `).join('');
     resultBox.innerHTML = `
-      <h4>⚠️ Errore nelle misure inserite</h4>
-      <p>La misura A (ruota alzata) deve essere la più alta, seguita da B (moto a terra) e poi C (moto con pilota). Ricontrolla i millimetri!</p>
+      <h4>⚠️ Controlla i valori inseriti (in millimetri)</h4>
+      <p style="font-size:12px;margin-top:4px;">I valori standard sul cavalletto sono solitamente tra 400 e 750 mm (es. 642.5 mm).</p>
+      ${btnsHtml}
     `;
     return;
   }
 
-  const staticSag = Math.round(a - b);
-  const riderSag = Math.round(a - c);
+  if (a <= b || a <= c || b <= c) {
+    resultBox.style.display = 'block';
+    resultBox.className = 'sag-result-box warning';
+    resultBox.innerHTML = `
+      <h4>⚠️ Errore nella sequenza delle misure</h4>
+      <p>La misura <b>A</b> (${a} mm) deve essere la più alta, seguita da <b>B</b> (${b} mm) e poi da <b>C</b> (${c} mm).</p>
+    `;
+    return;
+  }
+
+  const staticSag = Math.round((a - b) * 10) / 10;
+  const riderSag = Math.round((a - c) * 10) / 10;
 
   // Diagnosi tecnica in base alle tabelle manuale da motocross
   let riderDiag = '';
@@ -815,8 +862,8 @@ function calculateSag() {
 }
 
 function calculateForkSag() {
-  const c = parseFloat(document.getElementById('sagForkC').value);
-  const d = parseFloat(document.getElementById('sagForkD').value);
+  const c = parseMm(document.getElementById('sagForkC').value);
+  const d = parseMm(document.getElementById('sagForkD').value);
   const resultBox = document.getElementById('forkSagResultBox');
   const bike = getCurrentBike();
   const specs = bike.sagSpecs;
@@ -826,7 +873,7 @@ function calculateForkSag() {
     return;
   }
 
-  const forkSag = Math.round(c - d);
+  const forkSag = Math.round((c - d) * 10) / 10;
   let feedback = '';
   let boxClass = 'success';
 
